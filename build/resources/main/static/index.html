@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3D House Renderer</title>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <div id="ui">
+        <div class="control-group">
+            <button onclick="toggleProjection()">Toggle Projection</button>
+            <button onclick="toggleLights()">Toggle Lights</button>
+        </div>
+        <div class="control-group">
+            <label>Camera Z: <input type="range" min="5" max="50" value="20" 
+                   id="cameraZSlider" oninput="updateCameraZ(this.value)"></label>
+            <span id="cameraZValue">20</span>
+        </div>
+        <div class="control-group">
+            <label>Rotation Speed: <input type="range" min="1" max="10" value="3" 
+                   id="rotationSpeed"></label>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
