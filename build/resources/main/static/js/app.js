@@ -171,7 +171,7 @@ function updateCamera() {
         camera = new THREE.OrthographicCamera(
             -viewSize * aspect, viewSize * aspect,
             viewSize, -viewSize,
-            1, 1000
+            -100, 1000
         );
     }
     camera.position.z = cameraZ;
@@ -185,8 +185,13 @@ function updateCamera() {
 function toggleProjection() {
     currentProjection = currentProjection === 'perspective' ? 'orthographic' : 'perspective';
     updateCamera();
+    
+    camera.position.set(0, 5, 20);
+    camera.lookAt(house.position);
+    
     requestAnimationFrame(() => {
         camera.updateProjectionMatrix();
+        renderer.render(scene, camera);
     });
 }
 
@@ -253,6 +258,12 @@ function setupEventListeners() {
 function toggleLights() {
     directionalLight.visible = !directionalLight.visible;
     houseLights.visible = !houseLights.visible;
+    
+    scene.traverse(obj => {
+        if (obj.material) {
+            obj.material.needsUpdate = true;
+        }
+    });
 }
 
 function updateCameraZ(value) {

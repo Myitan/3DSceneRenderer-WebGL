@@ -23,8 +23,8 @@ function init() {
     setupRenderer();
     setupLighting();
     loadTextures();
-    createHause();  // Create house FIRST
-    setupCamera();  // Then setup camera
+    createHause();  
+    setupCamera();
     createFloor();
     setupUI();
     setupEventListeners();
@@ -45,11 +45,9 @@ function setupRenderer() {
 
 
 function setupLighting() {
-    // Ambient light
     ambientLight = new THREE.AmbientLight(0xffffff, controls.ambientIntensity);
     scene.add(ambientLight);
 
-    // Main directional light
     directionalLight = new THREE.DirectionalLight(0xffffff, controls.lightIntensity);
     directionalLight.position.set(5, 10, 5);
     directionalLight.castShadow = true;
@@ -57,7 +55,6 @@ function setupLighting() {
     directionalLight.shadow.mapSize.height = 2048;
     scene.add(directionalLight);
 
-    // House interior lights
     houseLights = new THREE.PointLight(0xffeedd, 1, 10);
     houseLights.position.set(0, 0, 0);
     scene.add(houseLights);
@@ -171,7 +168,7 @@ function updateCamera() {
         camera = new THREE.OrthographicCamera(
             -viewSize * aspect, viewSize * aspect,
             viewSize, -viewSize,
-            1, 1000
+            -100, 1000
         );
     }
     camera.position.z = cameraZ;
@@ -185,8 +182,13 @@ function updateCamera() {
 function toggleProjection() {
     currentProjection = currentProjection === 'perspective' ? 'orthographic' : 'perspective';
     updateCamera();
+    
+    camera.position.set(0, 5, 20);
+    camera.lookAt(house.position);
+    
     requestAnimationFrame(() => {
         camera.updateProjectionMatrix();
+        renderer.render(scene, camera);
     });
 }
 
@@ -253,6 +255,12 @@ function setupEventListeners() {
 function toggleLights() {
     directionalLight.visible = !directionalLight.visible;
     houseLights.visible = !houseLights.visible;
+    
+    scene.traverse(obj => {
+        if (obj.material) {
+            obj.material.needsUpdate = true;
+        }
+    });
 }
 
 function updateCameraZ(value) {
